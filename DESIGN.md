@@ -44,14 +44,13 @@ password: String,
  Each Category -> belongs to one User
 
  ## REST API SPECS
- REGISTER: METHOD (POST) / END POINT REQUEST (username, email, password) / END POINT RESPONSE (username, email, password) / ENDPOINT (/register)
+ REGISTER: METHOD (POST) / END POINT REQUEST (username, email, password) / END POINT RESPONSE (success: "true/false") / ENDPOINT (/register)
  
- LOGIN IN: METHOD (POST) / END POINT REQUEST (email or username, password) / END POINT RESPONSE (username, email, password) / ENDPOINT (/login)
+ LOGIN IN: METHOD (POST) / END POINT REQUEST (email or username, password) / END POINT RESPONSE (success: "true/false", token) / ENDPOINT (/login)
  
-ADD EXPENSE: METHOD (POST) / END POINT REQUEST (title, amount, date) / END POINT RESPONSE (success: "true/false", title, amount, date) / ENDPOINT (/expense)
+ ADD EXPENSE: METHOD (POST) / END POINT REQUEST (title, amount, date) / END POINT RESPONSE (success: "true/false", title, amount, date) / ENDPOINT (/add-expense)
 
-FILTER BY YEAR: METHOD (GET) / END POINT REQUEST (title, amount, date) / END POINT RESPONSE (title, amount, date) / ENDPOINT (/year)
+ FILTER BY YEAR: METHOD (GET) / END POINT REQUEST (year) / END POINT RESPONSE ([{title, amount, date}]) / ENDPOINT (/expenses?year={year})
 
-
-## MEETINGS
-10/19/2025 1:00-1:45 — Set up GitHub and GitHub Projects, discussed and developed Milestone 1, and decided on MongoDB as database.
+ ## MEETINGS
+ 10/19/2025 1:00-1:45 — Set up GitHub and GitHub Projects, discussed and developed Milestone 1, and decided on MongoDB as database.
