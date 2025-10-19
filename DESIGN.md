@@ -2,7 +2,7 @@
 -Juan Boyer
 -Camden Ness
 -Chace Nuttall
--BriAnna Piscke
+-BriAnna Pischke
 
 ## FORKED REPOSITORY LINK
 -https://github.com/brianna-pischke/Expense-Tracker
@@ -12,26 +12,26 @@ https://github.com/users/brianna-pischke/projects/1/views/1
 
 ## USER MODEL
 {
-id: ObjectId;
-name: String;
-email: String;
-password: String;
+id: ObjectId,
+name: String,
+email: String,
+password: String,
 }
 
 ## EXPENSE MODEL
 {
- id: ObjectId;
- userId: ObjectId;
+ id: ObjectId,
+ userId: ObjectId,
  amount: Number,
- categoryId: ObjectId
+ categoryId: ObjectId,
  title: String,
  date: Date,
  }
 
  ## CATEGORIES
  {
- id: ObjectId;
- name: String;
+ id: ObjectId,
+ name: String,
  }
 
  ## RELATIONSHPS
@@ -47,4 +47,4 @@ password: String;
  
 ADD EXPENSE: METHOD (POST) / END POINT REQUEST (title, amount, date) / END POINT RESPONSE (success: "true/false", title, amount, date) / ENDPOINT (/expense)
 
-FILTER BY YEAR: METHOD (GET) / END POINT REQUEST (title, amount, date) / END POINT RESPONSE (title, amount, date) / ENPOINT (/year)
+FILTER BY YEAR: METHOD (GET) / END POINT REQUEST (title, amount, date) / END POINT RESPONSE (title, amount, date) / ENDPOINT (/year)
