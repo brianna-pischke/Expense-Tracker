@@ -5,7 +5,7 @@
 -BriAnna Pischke
 
 ## FORKED REPOSITORY LINK
--https://github.com/brianna-pischke/Expense-Tracker
+https://github.com/brianna-pischke/Expense-Tracker
 
 ## PROJECT BOARD LINK
 https://github.com/users/brianna-pischke/projects/1/views/1
