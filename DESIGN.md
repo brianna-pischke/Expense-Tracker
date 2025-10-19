@@ -51,3 +51,7 @@ password: String,
 ADD EXPENSE: METHOD (POST) / END POINT REQUEST (title, amount, date) / END POINT RESPONSE (success: "true/false", title, amount, date) / ENDPOINT (/expense)
 
 FILTER BY YEAR: METHOD (GET) / END POINT REQUEST (title, amount, date) / END POINT RESPONSE (title, amount, date) / ENDPOINT (/year)
+
+
+## MEETINGS
+10/19/2025 1:00-1:45 — Set up GitHub and GitHub Projects, discussed and developed Milestone 1, and decided on MongoDB as database.
