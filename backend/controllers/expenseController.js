@@ -20,20 +20,23 @@ const getExpenses = async (req, res, next) => {
 // @access  Private
 const getExpenseById = async (req, res, next) => {
   try {
-    const expense = await Expense.findById(req.params.id)
-      .populate('userId', 'name email')
-      .populate('categoryId', 'name');
+    const expense = await Expense.findById(req.params.id);
     
     if (!expense) {
       return res.status(404).json({ message: 'Expense not found' });
     }
 
-    // Ensure user owns this expense
-    if (expense.userId._id.toString() !== req.user.id) {
+    // Ensure user owns this expense (check before populating)
+    if (expense.userId.toString() !== req.user.id) {
       return res.status(403).json({ message: 'Not authorized to access this expense' });
     }
 
-    res.json(expense);
+    // Populate after authorization check
+    const populatedExpense = await Expense.findById(req.params.id)
+      .populate('userId', 'name email')
+      .populate('categoryId', 'name');
+
+    res.json(populatedExpense);
   } catch (err) {
     next(err);
   }
@@ -44,17 +47,35 @@ const getExpenseById = async (req, res, next) => {
 // @access  Private
 const createExpense = async (req, res, next) => {
   try {
-    // Automatically set userId to logged in user
+    const { title, amount, date, categoryId } = req.body;
+
+    // Validation
+    if (!title || amount === undefined || !date) {
+      return res.status(400).json({ 
+        message: 'Please provide title, amount, and date' 
+      });
+    }
+
+    // Automatically set userId to logged in user (prevent user from setting their own userId)
     const expenseData = {
-      ...req.body,
+      title: title.trim(),
+      amount: Number(amount),
+      date: new Date(date),
+      categoryId: categoryId || null,
       userId: req.user.id
     };
+
     const created = await Expense.create(expenseData);
     const expense = await Expense.findById(created._id)
       .populate('userId', 'name email')
       .populate('categoryId', 'name');
     res.status(201).json(expense);
   } catch (err) {
+    // Handle validation errors
+    if (err.name === 'ValidationError') {
+      const messages = Object.values(err.errors).map(e => e.message);
+      return res.status(400).json({ message: messages.join(', ') });
+    }
     next(err);
   }
 };
@@ -75,9 +96,14 @@ const updateExpense = async (req, res, next) => {
       return res.status(403).json({ message: 'Not authorized to update this expense' });
     }
 
-    // Prevent changing userId
+    // Prevent changing userId - always keep the original owner
     const updateData = { ...req.body };
     delete updateData.userId;
+
+    // Clean up the update data
+    if (updateData.title) updateData.title = updateData.title.trim();
+    if (updateData.amount !== undefined) updateData.amount = Number(updateData.amount);
+    if (updateData.date) updateData.date = new Date(updateData.date);
 
     expense = await Expense.findByIdAndUpdate(req.params.id, updateData, { 
       new: true,
@@ -88,6 +114,11 @@ const updateExpense = async (req, res, next) => {
     
     res.json(expense);
   } catch (err) {
+    // Handle validation errors
+    if (err.name === 'ValidationError') {
+      const messages = Object.values(err.errors).map(e => e.message);
+      return res.status(400).json({ message: messages.join(', ') });
+    }
     next(err);
   }
 };
