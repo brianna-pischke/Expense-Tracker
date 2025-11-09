@@ -6,8 +6,12 @@ const {
   updateExpense,
   deleteExpense
 } = require('../controllers/expenseController');
+const { protect } = require('../middleware/authMiddleware');
 
 const router = express.Router();
+
+// All expense routes require authentication
+router.use(protect);
 
 // /api/expenses
 router.get('/', getExpenses);
