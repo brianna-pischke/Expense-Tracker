@@ -1,51 +1,67 @@
-import React, {useState} from "react";
+import React, { useEffect, useState } from "react";
 import DisplayExpenses from "./components/Expenses/DisplayExpenses";
 import NewExpense from "./components/NewExpense/NewExpense";
-
-const DUMMY_EXPENSES = [
-    {
-      id: "e1",
-      title: "Toilet Paper",
-      amount: 94.12,
-      date: new Date(2020, 7, 14),
-    },
-    {
-      id: "e2",
-      title: "New TV",
-      amount: 799.49,
-      date: new Date(2021, 6, 9),
-    },
-    {
-      id: "e3",
-      title: "Car Insurance",
-      amount: 294.67,
-      date: new Date(2020, 9, 29),
-    },
-    {
-      id: "e4",
-      title: "New Desk (wooden)",
-      amount: 450,
-      date: new Date(2020, 2, 12),
-    },
-  ];
+import { getExpenses, addExpense } from "./services/expenseService";
+import { getCategories } from "./services/categoryService";
 
 const App = () => {
+  const [expenses, setExpenses] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const [expenses, setExpenses] = useState(DUMMY_EXPENSES);
+//Load expenses + categories from backend
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const [expenseData, categoryData] = await Promise.all([
+          getExpenses(),
+          getCategories(),
+        ]);
 
-  const addExpenseHandler = expense => {
-    setExpenses(prevExpenses => {
-      return [expense, ...expenses]
-    });
-  }
+        const formatted = expenseData.map((exp) => ({
+          id: exp._id,
+          title: exp.title,
+          amount: exp.amount,
+          date: new Date(exp.date),
+          category:
+            exp.categoryId?.name || "Uncategorized", // from populate()
+        }));
+
+        setExpenses(formatted);
+        setCategories(categoryData);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchData();
+  }, []);
+
+//Add expense to backend + local state
+  const addExpenseHandler = async (expense) => {
+    try {
+      const saved = await addExpense(expense);
+      setExpenses((prev) => [
+        { ...saved, id: saved._id, date: new Date(saved.date) },
+        ...prev,
+      ]);
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  if (loading) return <p>Loading data...</p>;
+  if (error) return <p style={{ color: "red" }}>Error: {error}</p>;
 
   return (
-  <div>
-     <NewExpense onAddExpense = {addExpenseHandler} />
-     <DisplayExpenses expenses_list={expenses} />
-  
-  </div>
- );
+    <div>
+      <NewExpense onAddExpense={addExpenseHandler} categories={categories} />
+      <DisplayExpenses expenses_list={expenses} />
+    </div>
+  );
 };
 
 export default App;
