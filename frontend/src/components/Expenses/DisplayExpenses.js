@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import ExpenseItem from "./ExpenseItem";
 import "./DisplayExpenses.css";
 import Card from "../UI/Card";
@@ -15,7 +15,7 @@ function DisplayExpenses(props) {
     // console.log(year);
   }
 
-  const filteredExpenses = props.expenses_list.filter(expense => expense.date.getFullYear().toString() == filterYear);
+  const filteredExpenses = props.expenses_list.filter(expense => expense.date.getFullYear().toString() === filterYear);
 
   return (
     <div>
