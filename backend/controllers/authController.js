@@ -15,7 +15,7 @@ const signup = async (req, res, next) => {
   try {
     const { name, email, password } = req.body;
 
-    // Validation
+    // Validation form completed
     if (!name || !email || !password) {
       return res.status(400).json({ message: 'Please provide name, email, and password' });
     }
@@ -38,7 +38,7 @@ const signup = async (req, res, next) => {
       password
     });
 
-    // Generate token
+    // Generate token for user
     const token = generateToken(user._id);
 
     res.status(201).json({
@@ -82,7 +82,7 @@ const login = async (req, res, next) => {
     // Check password
     const isMatch = await user.matchPassword(password);
     if (!isMatch) {
-      return res.status(401).json({ message: 'Invalid credentials' });
+      return res.status(401).json({ message: 'Invalid Password' });
     }
 
     // Generate token

@@ -10,7 +10,7 @@ const { protect } = require('../middleware/authMiddleware');
 
 const router = express.Router();
 
-// All expense routes require authentication
+// Makes all expense routes require authentication
 router.use(protect);
 
 // /api/expenses
