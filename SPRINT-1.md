@@ -12,6 +12,7 @@ https://github.com/users/brianna-pischke/projects/1/views/1
 
 11/05/25 8:00-8:15 (All members) - Discussed progress since previous meeting (api and connecting frontend to backend). Discussed how MongoDB is set up on Atlas, its connection string, and moving from private account to public. Considered authentication implementation. Planned to connect functionality and prepare hosting enviornment by next meeting.
 
+11/12/2025 8:00-8:15 (All members) - Overwent api and connected frontend to backend in Railway. Went over implementation of authentication system and .env files. Overwent pending pull requests and committed them. Divided out work for Sprint.MD document and how it should look.
 
 **PROGRESS SUMMARY**
 
