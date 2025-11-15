@@ -35,5 +35,9 @@ Expense saved in database: Once a user submits the form, the new expense is stor
 <img width="1067" height="392" alt="image" src="https://github.com/user-attachments/assets/9c402b68-6ff8-4ccf-b468-3d859d746357" />
 
 Expense displays on dashboard: The dashboard loads all expenses that the user has logged within the selected year. In the photo, the new Bubblegum expense is displayed correctly. 
+<img width="1439" height="703" alt="image" src="https://github.com/user-attachments/assets/13356273-3e5a-4631-8bb8-a8874140fd88" />
+
 
 Data stays after refreshing: This photo shows the deployed version after refreshing the page. All expenses show immediately, and will remain stored when the page is reloaded or the user logs out. 
+<img width="1439" height="703" alt="image" src="https://github.com/user-attachments/assets/13356273-3e5a-4631-8bb8-a8874140fd88" />
+
