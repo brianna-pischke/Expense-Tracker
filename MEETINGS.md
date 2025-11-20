@@ -7,4 +7,6 @@
 
  11/05/25 8:00-8:15 (All members) - Discussed progress since previous meeting (api and connecting frontend to backend). Discussed how MongoDB is set up on Atlas, its connection string, and moving from private account to public. Considered authentication implementation. Planned to connect functionality and prepare hosting enviornment by next meeting.
 
-11/12/2025 8:00-8:15 (All members) - Overwent api and connected frontend to backend in Railway. Went over implementation of authentication system and .env files. Overwent pending pull requests and committed them. Divided out work for Sprint.MD document and how it should look. 
+11/12/2025 8:00-8:15 (All members) - Went over api and connected frontend to backend in Railway. Went over implementation of authentication system and .env files. Overwent pending pull requests and committed them. Divided out work for Sprint.MD document and how it should look. 
+
+11/19/25 8:20-8:35 (All members) - Talked about adding new feature like a dashboard with a profile viewer or a budget module. Decided on a budget module.   
