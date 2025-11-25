@@ -6,6 +6,7 @@ const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/users');
 const expenseRoutes = require('./routes/expenses');
 const categoryRoutes = require('./routes/categories');
+const budgetRoutes = require('./routes/budget');
 const { notFound, errorHandler } = require('./middleware/errorMiddleware');
 
 const app = express();
@@ -32,6 +33,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/expenses', expenseRoutes);
 app.use('/api/categories', categoryRoutes);
+app.use('/api/budget', budgetRoutes);
 
 // Error handling
 app.use(notFound);

@@ -1,0 +1,39 @@
+const API_URL =
+  process.env.REACT_APP_API_URL || "https://expensetrackertestrailway-production.up.railway.app";
+
+//Get budget for user
+export const getBudget = async (token) => {
+  const response = await fetch(`${API_URL}/api/budget`, {
+    headers: {
+      'Authorization': `Bearer ${token}`
+    }
+  });
+  if (!response.ok) throw new Error("Failed to fetch budget");
+  return await response.json();
+};
+
+//Create or update budget
+export const saveBudget = async (amount, token) => {
+  const response = await fetch(`${API_URL}/api/budget`, {
+    method: "POST",
+    headers: { 
+      "Content-Type": "application/json",
+      'Authorization': `Bearer ${token}`
+    },
+    body: JSON.stringify({ amount }),
+  });
+  if (!response.ok) throw new Error("Failed to save budget");
+  return await response.json();
+};
+
+//Delete budget
+export const deleteBudget = async (token) => {
+  const response = await fetch(`${API_URL}/api/budget`, {
+    method: "DELETE",
+    headers: {
+      'Authorization': `Bearer ${token}`
+    }
+  });
+  if (!response.ok) throw new Error("Failed to delete budget");
+};
+
