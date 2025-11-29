@@ -3,7 +3,7 @@ const API_URL =
 
 //Fetch user's budget
 export const getBudget = async (token) => {
-  const response = await fetch(`${API_URL}/api/budget`, {
+  const response = await fetch(`${API_URL}/api/budgets`, {
     headers: {
       'Authorization': `Bearer ${token}`
     }
@@ -14,7 +14,7 @@ export const getBudget = async (token) => {
 
 //Save user's budget
 export const saveBudget = async (budget, token) => {
-  const response = await fetch(`${API_URL}/api/budget`, {
+  const response = await fetch(`${API_URL}/api/budgets`, {
     method: "POST",
     headers: { 
       "Content-Type": "application/json",
