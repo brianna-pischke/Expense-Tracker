@@ -1,4 +1,4 @@
-const Budget = require("../models/budget");
+const Budget = require("../models/Budget");
 
 exports.createBudget = async (req, res) => {
   try {
