@@ -3,8 +3,11 @@ import DisplayExpenses from "./components/Expenses/DisplayExpenses";
 import NewExpense from "./components/NewExpense/NewExpense";
 import Login from "./components/Auth/Login";
 import Register from "./components/Auth/Register";
+import BudgetTracker from "./components/Budget/BudgetTracker";
+import BudgetDisplay from "./components/Budget/BudgetDisplay";
 import { getExpenses, addExpense } from "./services/expenseService";
 import { getCategories } from "./services/categoryService";
+import { getBudget, saveBudget } from "./services/budgetService";
 
 const App = () => {
     // State for storing user's expenses (array of expense objects)
@@ -17,6 +20,8 @@ const App = () => {
     // JWT token for authentication - initialized from localStorage for session persistence
   const [token, setToken] = useState(localStorage.getItem('token'));
   const [authMode, setAuthMode] = useState('login'); // 'login' or 'register'
+  // Budget state
+  const [budget, setBudget] = useState(null);
 
   // Check if user is logged in on mount
   useEffect(() => {
@@ -29,15 +34,16 @@ const App = () => {
     }
   }, []);
 
-  // Load expenses + categories from backend when logged in
+  // Load expenses + categories + budget from backend when logged in
   useEffect(() => {
     if (!token) return;
 
     async function fetchData() {
       try {
-        const [expenseData, categoryData] = await Promise.all([
+        const [expenseData, categoryData, budgetData] = await Promise.all([
           getExpenses(token),
           getCategories(token),
+          getBudget(token).catch(() => ({ amount: 0, _id: null })), // Default to 0 if no budget
         ]);
         // Transform backend expense data to frontend format
         const formatted = expenseData.map((exp) => ({
@@ -49,6 +55,7 @@ const App = () => {
         }));
         setExpenses(formatted);
         setCategories(categoryData);
+        setBudget(budgetData);
       } catch (err) {
         setError(err.message);
         // If unauthorized, clear token
@@ -91,6 +98,22 @@ const App = () => {
     setToken(null);
     setExpenses([]);
     setCategories([]);
+    setBudget(null);
+  };
+
+  // Save budget handler
+  const handleSaveBudget = async (amount) => {
+    try {
+      const savedBudget = await saveBudget(amount, token);
+      setBudget(savedBudget);
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  // Calculate total spent from expenses
+  const calculateTotalSpent = () => {
+    return expenses.reduce((total, expense) => total + expense.amount, 0);
   };
 
   // Show login/register if no token
@@ -111,11 +134,15 @@ const App = () => {
   if (loading) return <p>Loading data...</p>;
   if (error) return <p style={{ color: "red" }}>Error: {error}</p>;
 
+  const totalSpent = calculateTotalSpent();
+
   return (
     <div>
       <div style={{ textAlign: 'right', padding: '1rem' }}>
         <button onClick={handleLogout}>Logout</button>
       </div>
+      <BudgetTracker onSaveBudget={handleSaveBudget} currentBudget={budget} />
+      <BudgetDisplay budget={budget} totalSpent={totalSpent} />
       <NewExpense onAddExpense={addExpenseHandler} categories={categories} />
       <DisplayExpenses expenses_list={expenses} />
     </div>
