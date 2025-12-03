@@ -1,14 +1,14 @@
 const API_URL =
   process.env.REACT_APP_API_URL || "https://expensetrackertestrailway-production.up.railway.app";
 
-//Fetch user's budget
-export const getBudget = async (token) => {
+//Fetch user's monthly budgets
+export const getBudgets = async (token) => {
   const response = await fetch(`${API_URL}/api/budgets`, {
     headers: {
       'Authorization': `Bearer ${token}`
     }
   });
-  if (!response.ok) throw new Error("Failed to fetch budget");
+  if (!response.ok) throw new Error("Failed to fetch budgets");
   return await response.json();
 };
 
