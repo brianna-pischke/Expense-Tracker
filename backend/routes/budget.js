@@ -1,20 +1,14 @@
-const express = require('express');
-const {
-  getBudget,
-  createOrUpdateBudget,
-  deleteBudget
-} = require('../controllers/budgetController');
-const { protect } = require('../middleware/authMiddleware');
-
+const express = require("express");
 const router = express.Router();
+const auth = require("../middleware/authMiddleware");
 
-// Makes all budget routes require authentication
-router.use(protect);
+const {
+  createBudget,
+  getBudgets
+} = require("../controllers/budgetController");
 
-// /api/budget
-router.get('/', getBudget);
-router.post('/', createOrUpdateBudget);
-router.delete('/', deleteBudget);
+router.post("/", auth, createBudget);
+
+router.get("/", auth, getBudgets);
 
 module.exports = router;
-

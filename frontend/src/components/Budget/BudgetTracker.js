@@ -4,6 +4,12 @@ import Card from "../UI/Card";
 
 const BudgetTracker = ({ onSaveBudget, currentBudget }) => {
   const [enteredAmount, setEnteredAmount] = useState(currentBudget?.amount?.toString() || '');
+  
+  // Get current month in YYYY-MM format
+  const getCurrentMonth = () => {
+    const now = new Date();
+    return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+  };
 
   const amountChangeHandler = (event) => {
     setEnteredAmount(event.target.value);
@@ -18,7 +24,11 @@ const BudgetTracker = ({ onSaveBudget, currentBudget }) => {
       return;
     }
 
-    onSaveBudget(budgetAmount);
+    // Send budget with amount and month
+    onSaveBudget({
+      amount: budgetAmount,
+      month: getCurrentMonth()
+    });
   };
 
   return (

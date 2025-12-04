@@ -1,39 +1,27 @@
 const API_URL =
   process.env.REACT_APP_API_URL || "https://expensetrackertestrailway-production.up.railway.app";
 
-//Get budget for user
-export const getBudget = async (token) => {
-  const response = await fetch(`${API_URL}/api/budget`, {
+//Fetch user's monthly budgets
+export const getBudgets = async (token) => {
+  const response = await fetch(`${API_URL}/api/budgets`, {
     headers: {
       'Authorization': `Bearer ${token}`
     }
   });
-  if (!response.ok) throw new Error("Failed to fetch budget");
+  if (!response.ok) throw new Error("Failed to fetch budgets");
   return await response.json();
 };
 
-//Create or update budget
-export const saveBudget = async (amount, token) => {
-  const response = await fetch(`${API_URL}/api/budget`, {
+//Save user's budget
+export const saveBudget = async (budget, token) => {
+  const response = await fetch(`${API_URL}/api/budgets`, {
     method: "POST",
     headers: { 
       "Content-Type": "application/json",
       'Authorization': `Bearer ${token}`
     },
-    body: JSON.stringify({ amount }),
+    body: JSON.stringify(budget),
   });
   if (!response.ok) throw new Error("Failed to save budget");
   return await response.json();
 };
-
-//Delete budget
-export const deleteBudget = async (token) => {
-  const response = await fetch(`${API_URL}/api/budget`, {
-    method: "DELETE",
-    headers: {
-      'Authorization': `Bearer ${token}`
-    }
-  });
-  if (!response.ok) throw new Error("Failed to delete budget");
-};
-
