@@ -20,8 +20,8 @@ const App = () => {
     // JWT token for authentication - initialized from localStorage for session persistence
   const [token, setToken] = useState(localStorage.getItem('token'));
   const [authMode, setAuthMode] = useState('login'); // 'login' or 'register'
-  // Budget state
-  const [budget, setBudget] = useState(null);
+  // Budget state - array of budgets, one per month
+  const [budgets, setBudgets] = useState([]);
 
   // Check if user is logged in on mount
   useEffect(() => {
@@ -40,10 +40,10 @@ const App = () => {
 
     async function fetchData() {
       try {
-        const [expenseData, categoryData, budgetData] = await Promise.all([
+        const [expenseData, categoryData, budgetsData] = await Promise.all([
           getExpenses(token),
           getCategories(token),
-          getBudget(token).catch(() => ({ amount: 0, _id: null })), // Default to 0 if no budget
+          getBudgets(token).catch(() => []), // Default to empty array if no budgets
         ]);
         // Transform backend expense data to frontend format
         const formatted = expenseData.map((exp) => ({
@@ -55,7 +55,7 @@ const App = () => {
         }));
         setExpenses(formatted);
         setCategories(categoryData);
-        setBudget(budgetData);
+        setBudgets(budgetsData);
       } catch (err) {
         setError(err.message);
         // If unauthorized, clear token
@@ -98,14 +98,23 @@ const App = () => {
     setToken(null);
     setExpenses([]);
     setCategories([]);
-    setBudget(null);
+    setBudgets([]);
   };
 
-  // Save budget handler
-  const handleSaveBudget = async (amount) => {
+  // Save budget handler - expects { amount, month }
+  const handleSaveBudget = async (budgetData) => {
     try {
-      const savedBudget = await saveBudget(amount, token);
-      setBudget(savedBudget);
+      const savedBudget = await saveBudget(budgetData, token);
+      // Update budgets array - replace if exists, add if new
+      setBudgets((prev) => {
+        const existingIndex = prev.findIndex(b => b.month === savedBudget.month);
+        if (existingIndex >= 0) {
+          const updated = [...prev];
+          updated[existingIndex] = savedBudget;
+          return updated;
+        }
+        return [...prev, savedBudget].sort((a, b) => a.month.localeCompare(b.month));
+      });
     } catch (err) {
       setError(err.message);
     }
@@ -114,6 +123,13 @@ const App = () => {
   // Calculate total spent from expenses
   const calculateTotalSpent = () => {
     return expenses.reduce((total, expense) => total + expense.amount, 0);
+  };
+
+  // Get current month's budget (format: YYYY-MM)
+  const getCurrentMonthBudget = () => {
+    const now = new Date();
+    const currentMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+    return budgets.find(b => b.month === currentMonth) || null;
   };
 
   // Show login/register if no token
@@ -135,14 +151,15 @@ const App = () => {
   if (error) return <p style={{ color: "red" }}>Error: {error}</p>;
 
   const totalSpent = calculateTotalSpent();
+  const currentBudget = getCurrentMonthBudget();
 
   return (
     <div>
       <div style={{ textAlign: 'right', padding: '1rem' }}>
         <button onClick={handleLogout}>Logout</button>
       </div>
-      <BudgetTracker onSaveBudget={handleSaveBudget} currentBudget={budget} />
-      <BudgetDisplay budget={budget} totalSpent={totalSpent} />
+      <BudgetTracker onSaveBudget={handleSaveBudget} currentBudget={currentBudget} />
+      <BudgetDisplay budget={currentBudget} totalSpent={totalSpent} />
       <NewExpense onAddExpense={addExpenseHandler} categories={categories} />
       <DisplayExpenses expenses_list={expenses} />
     </div>
