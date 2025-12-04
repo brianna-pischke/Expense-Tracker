@@ -10,3 +10,7 @@
 11/12/2025 8:00-8:15 (All members) - Went over api and connected frontend to backend in Railway. Went over implementation of authentication system and .env files. Overwent pending pull requests and committed them. Divided out work for Sprint.MD document and how it should look. 
 
 11/19/25 8:20-8:35 (All members) - Talked about adding new feature like a dashboard with a profile viewer or a budget module. Decided on a budget module.   
+
+11/24/25 8:00-8:15 (All members) - Discussed tasks for implementing budget module. Distributed task responsibilities among team members.
+
+12/3/25 8:05-8:20 (All members) - Planned for reconciliation between work done on front-end and back-end. Discussed milestone 3 requirements and began preparing for milestone 4. Final report tasks divided and presentation time scheduled.
