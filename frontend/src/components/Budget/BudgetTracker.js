@@ -3,14 +3,8 @@ import "./budgetTracker.css";
 import Card from "../UI/Card";
 
 const BudgetTracker = ({ onSaveBudget, currentBudget }) => {
-  const [enteredAmount, setEnteredAmount] = useState(currentBudget?.amount?.toString() || '');
+  const [enteredAmount, setEnteredAmount] = useState(currentBudget?.monthlyLimit?.toString() || '');  
   
-  // Get current month in YYYY-MM format
-  const getCurrentMonth = () => {
-    const now = new Date();
-    return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
-  };
-
   const amountChangeHandler = (event) => {
     setEnteredAmount(event.target.value);
   };
@@ -24,10 +18,16 @@ const BudgetTracker = ({ onSaveBudget, currentBudget }) => {
       return;
     }
 
-    // Send budget with amount and month
+    // Get current date
+    const now = new Date();
+    const month = now.getMonth() + 1;  // 1-12
+    const year = now.getFullYear();
+    
+    // Send budget in the format backend expects: { monthlyLimit, month, year }
     onSaveBudget({
-      amount: budgetAmount,
-      month: getCurrentMonth()
+      monthlyLimit: budgetAmount,  
+      month: month,                 
+      year: year                   
     });
   };
 
