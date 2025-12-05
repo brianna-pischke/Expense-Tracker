@@ -7,7 +7,7 @@ import BudgetTracker from "./components/Budget/BudgetTracker";
 import BudgetDisplay from "./components/Budget/BudgetDisplay";
 import { getExpenses, addExpense } from "./services/expenseService";
 import { getCategories } from "./services/categoryService";
-import { getBudget, saveBudget } from "./services/budgetService";
+import { getBudgets, saveBudget } from "./services/budgetService";
 
 const App = () => {
     // State for storing user's expenses (array of expense objects)
@@ -120,16 +120,16 @@ const App = () => {
     }
   };
 
-  // Calculate total spent from expenses
-  const calculateTotalSpent = () => {
-    return expenses.reduce((total, expense) => total + expense.amount, 0);
-  };
-
   // Get current month's budget (format: YYYY-MM)
   const getCurrentMonthBudget = () => {
     const now = new Date();
     const currentMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
     return budgets.find(b => b.month === currentMonth) || null;
+  };
+
+  // Calculate total spent from expenses
+  const calculateTotalSpent = () => {
+    return expenses.reduce((total, expense) => total + expense.amount, 0);
   };
 
   // Show login/register if no token
