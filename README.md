@@ -16,7 +16,7 @@ Welcome to Expense Tracker, a web application built with React.js that helps you
 
 ## Live Demo
 
-##View live application (https://expense-tracker-production-3a74.up.railway.app/)
+##View live application (https://outstanding-freedom-production.up.railway.app/)
 
 ## Getting Started
 
