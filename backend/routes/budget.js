@@ -1,14 +1,31 @@
 const express = require("express");
 const router = express.Router();
-const auth = require("../middleware/authMiddleware");
 
+// Middleware
+const { protect } = require("../middleware/authMiddleware");
+
+// Controller functions
 const {
-  createBudget,
-  getBudgets
+  setBudget,
+  getBudget,
+  getCurrentBudget,
+  getAllBudgets,
+  deleteBudget,
 } = require("../controllers/budgetController");
 
-router.post("/", auth, createBudget);
+// Create or update a budget
+router.post("/", protect, setBudget);
 
-router.get("/", auth, getBudgets);
+// Get all budgets for a user
+router.get("/", protect, getAllBudgets);
+
+// Get a specific month/year budget
+router.get("/:month/:year", protect, getBudget);
+
+// Get current month's budget
+router.get("/current", protect, getCurrentBudget);
+
+// Delete a budget
+router.delete("/:id", protect, deleteBudget);
 
 module.exports = router;
