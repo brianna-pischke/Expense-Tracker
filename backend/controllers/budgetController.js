@@ -1,120 +1,173 @@
-<<<<<<< HEAD
 const Budget = require('../models/Budget');
 
-// @desc    Get budget for logged in user
-// @route   GET /api/budget
-// @access  Private
-const getBudget = async (req, res, next) => {
+/**
+ * Set or update a monthly budget
+ * POST /api/budgets
+ */
+const setBudget = async (req, res) => {
   try {
-    let budget = await Budget.findOne({ userId: req.user.id });
-    
-    // If no budget exists, return default
-    if (!budget) {
-      return res.json({ amount: 0, _id: null });
+    const { monthlyLimit, month, year } = req.body;
+    const userId = req.user.id;  // From protect middleware
+
+    // Validate required fields
+    if (!monthlyLimit || !month || !year) {
+      return res.status(400).json({ 
+        message: 'Please provide monthlyLimit, month, and year' 
+      });
     }
-    
+
+    // Validate month range
+    if (month < 1 || month > 12) {
+      return res.status(400).json({ 
+        message: 'Month must be between 1 and 12' 
+      });
+    }
+
+    // Validate positive budget
+    if (monthlyLimit < 0) {
+      return res.status(400).json({ 
+        message: 'Budget limit must be a positive number' 
+      });
+    }
+
+    // Check if budget already exists for this user/month/year
+    let budget = await Budget.findOne({ userId, month, year });
+
+    if (budget) {
+      // Update existing budget
+      budget.monthlyLimit = monthlyLimit;
+      await budget.save();
+      
+      return res.json({
+        message: 'Budget updated successfully',
+        budget,
+      });
+    } else {
+      // Create new budget
+      budget = await Budget.create({
+        userId,
+        monthlyLimit,
+        month,
+        year,
+      });
+
+      return res.status(201).json({
+        message: 'Budget created successfully',
+        budget,
+      });
+    }
+  } catch (error) {
+    console.error('Set budget error:', error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
+/**
+ * Get budget for a specific month and year
+ * GET /api/budgets/:month/:year
+ */
+const getBudget = async (req, res) => {
+  try {
+    const { month, year } = req.params;
+    const userId = req.user.id;
+
+    // Find budget for this user/month/year
+    const budget = await Budget.findOne({ 
+      userId, 
+      month: parseInt(month), 
+      year: parseInt(year) 
+    });
+
+    if (!budget) {
+      return res.status(404).json({ 
+        message: 'No budget found for this month' 
+      });
+    }
+
     res.json(budget);
-  } catch (err) {
-    next(err);
+  } catch (error) {
+    console.error('Get budget error:', error);
+    res.status(500).json({ message: error.message });
   }
 };
 
-// @desc    Create or update budget for logged in user
-// @route   POST /api/budget
-// @access  Private
-const createOrUpdateBudget = async (req, res, next) => {
+/**
+ * Get current month's budget
+ * GET /api/budgets/current
+ */
+const getCurrentBudget = async (req, res) => {
   try {
-    const { amount } = req.body;
+    const userId = req.user.id;
+    const currentDate = new Date();
+    const month = currentDate.getMonth() + 1;  // JavaScript months are 0-indexed
+    const year = currentDate.getFullYear();
 
-    // Validation
-    if (amount === undefined || amount === null) {
-      return res.status(400).json({ 
-        message: 'Please provide a budget amount' 
-      });
-    }
+    // Find budget for current month
+    const budget = await Budget.findOne({ userId, month, year });
 
-    if (amount < 0) {
-      return res.status(400).json({ 
-        message: 'Budget amount must be positive' 
-      });
-    }
-
-    // Find existing budget or create new one
-    const budget = await Budget.findOneAndUpdate(
-      { userId: req.user.id },
-      { 
-        amount: Number(amount),
-        userId: req.user.id
-      },
-      { 
-        new: true,
-        upsert: true,
-        runValidators: true
-      }
-    );
-
-    res.status(201).json(budget);
-  } catch (err) {
-    // Handle validation errors
-    if (err.name === 'ValidationError') {
-      const messages = Object.values(err.errors).map(e => e.message);
-      return res.status(400).json({ message: messages.join(', ') });
-    }
-    next(err);
-  }
-};
-
-// @desc    Delete budget for logged in user
-// @route   DELETE /api/budget
-// @access  Private
-const deleteBudget = async (req, res, next) => {
-  try {
-    const budget = await Budget.findOne({ userId: req.user.id });
-    
     if (!budget) {
-      return res.status(404).json({ message: 'Budget not found' });
+      return res.status(404).json({ 
+        message: 'No budget set for current month' 
+      });
     }
 
-    await Budget.findByIdAndDelete(budget._id);
-    res.status(204).send();
-  } catch (err) {
-    next(err);
+    res.json(budget);
+  } catch (error) {
+    console.error('Get current budget error:', error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
+/**
+ * Get all budgets for a user
+ * GET /api/budgets
+ */
+const getAllBudgets = async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    // Find all budgets for this user, sorted by year and month (newest first)
+    const budgets = await Budget.find({ userId })
+      .sort({ year: -1, month: -1 });
+
+    res.json(budgets);
+  } catch (error) {
+    console.error('Get all budgets error:', error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
+/**
+ * Delete a budget
+ * DELETE /api/budgets/:id
+ */
+const deleteBudget = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const userId = req.user.id;
+
+    // Find budget and verify ownership
+    const budget = await Budget.findOne({ _id: id, userId });
+
+    if (!budget) {
+      return res.status(404).json({ 
+        message: 'Budget not found or unauthorized' 
+      });
+    }
+
+    await budget.deleteOne();
+
+    res.json({ message: 'Budget deleted successfully' });
+  } catch (error) {
+    console.error('Delete budget error:', error);
+    res.status(500).json({ message: error.message });
   }
 };
 
 module.exports = {
+  setBudget,
   getBudget,
-  createOrUpdateBudget,
-  deleteBudget
+  getCurrentBudget,
+  getAllBudgets,
+  deleteBudget,
 };
-
-=======
-const Budget = require("../models/Budget");
-
-exports.createBudget = async (req, res) => {
-  try {
-    const { amount, month } = req.body;
-
-    const budget = await Budget.create({
-      userId: req.user.id,
-      amount,
-      month,
-    });
-
-  res.status(201).json(budget);
-  } catch (err) {
-    console.error("Error creating budget:", err);
-    res.status(500).json({ message: "Server error" });
-  }
-};
-
-exports.getBudgets = async (req, res) => {
-  try {
-    const budgets = await Budget.find({ userId: req.user.id }).sort({ month: 1 });
-    res.status(200).json(budgets);
-  } catch (err) {
-    console.error("Error fetching budgets:", err);
-    res.status(500).json({ message: "Server error" });
-  }
-};
->>>>>>> main
