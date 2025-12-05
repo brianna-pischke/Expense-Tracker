@@ -16,7 +16,7 @@ Welcome to Expense Tracker, a web application built with React.js that helps you
 
 ## Live Demo
 
-You can access the live demo of the Expense Tracker by clicking [here](https://my-expense-tracker.onrender.com/).
+##View live application (https://expense-tracker-production-3a74.up.railway.app/)
 
 ## Getting Started
 
@@ -25,32 +25,68 @@ To run the application locally and explore its codebase, follow these steps:
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/ReeveFernandes/Expense-Tracker.git
+   git clone https://github.com/brianna-pischke/Expense-Tracker.git
 ```
 
-2. Navigate to the project directory:
-
+2. **Navigate to the backend directory:**
 ```bash
-cd Expense-Tracker
+   cd backend
 ```
 
-3. Install the dependencies:
-
+3. **Install backend dependencies:**
 ```bash
-npm install
+   npm install
 ```
 
-4. Start the development server:
-
+4. **Create a `.env` file in the backend directory:**
 ```bash
-npm start
+   touch .env
 ```
 
-5. Open your browser and visit [http://localhost:3000](http://localhost:3000) to see the application in action.
+5. **Add environment variables to `.env`:**
+```
+   MONGO_URI=mongodb+srv://expense_team_user:CVhrk5ScCPau0N8A@cluster0.j3qbnwx.mongodb.net/?appName=Cluster0
+   JWT_SECRET=BzRnKU9NHle8aIcYv7jtr1QLxEhoO6yXbCu2dWMADPsFG35JTmwk0ZpfgVqSi4
+   PORT=5000
+```
 
-## Technologies Used
+6. **Start the backend server:**
+```bash
+   npm start
+```
+   
+   The backend will run on `http://localhost:5000`
 
-- React: [^17.0.2](https://reactjs.org/)
+### Frontend Setup
+
+1. **Open a new terminal and navigate to the frontend directory:**
+```bash
+   cd frontend
+```
+
+2. **Install frontend dependencies:**
+```bash
+   npm install
+```
+
+3. **Create a `.env` file in the frontend directory (optional):**
+```bash
+   touch .env
+```
+
+4. **Add environment variable (optional - defaults to localhost):**
+```
+   REACT_APP_API_URL=http://localhost:5000
+```
+
+5. **Start the development server:**
+```bash
+   npm start
+```
+
+6. **Open your browser and visit:**
+```
+   http://localhost:3000
 
 ## Acknowledgements
 
