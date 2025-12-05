@@ -6,7 +6,7 @@ const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/users');
 const expenseRoutes = require('./routes/expenses');
 const categoryRoutes = require('./routes/categories');
-const budgetRoutes = require('./routes/budget');
+const budgetRoutes = require('./routes/budgets');  
 const { notFound, errorHandler } = require('./middleware/errorMiddleware');
 
 const app = express();
@@ -14,7 +14,8 @@ const app = express();
 // CORS configuration
 app.use(cors({
   origin: [
-    'https://frontend-production-df54.up.railway.app',
+    'https://outstanding-freedom-production.up.railway.app', 
+    'https://frontend-production-df54.up.railway.app',       
     'http://localhost:3000'
   ],
   credentials: true
