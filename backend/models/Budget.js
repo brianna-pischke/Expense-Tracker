@@ -1,29 +1,45 @@
 const mongoose = require('mongoose');
 
-// Define budget schema
-const budgetSchema = new mongoose.Schema({
-  userId: {
-    type: mongoose.Schema.Types.ObjectId, 
-    ref: 'User',
-    required: [true, 'User ID is required']
+/**
+ * Budget Model
+ * Stores monthly budget limits for users
+ * Each user can have one budget per month/year combination
+ */
+const budgetSchema = new mongoose.Schema(
+  {
+    // Reference to the user who owns this budget
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: true,
+    },
+    // Monthly budget limit (e.g., 2000 for $2000/month)
+    monthlyLimit: {
+      type: Number,
+      required: [true, 'Please provide a monthly budget limit'],
+      min: [0, 'Budget limit must be a positive number'],
+    },
+    // Month (1-12, where 1 = January, 12 = December)
+    month: {
+      type: Number,
+      required: true,
+      min: 1,
+      max: 12,
+    },
+    // Year (e.g., 2025)
+    year: {
+      type: Number,
+      required: true,
+      min: 2019,  // Minimum year allowed
+    },
   },
-  amount: {
-    type: Number,
-    required: [true, 'Please provide a budget amount'],
-    min: [0, 'Budget amount must be positive']
-  },
-  month: {
-    type: String,
-    required: [true, 'Please provide a month'],
-    // Format: "YYYY-MM" (e.g., "2025-11")
-    match: [/^\d{4}-\d{2}$/, 'Month must be in format YYYY-MM']
+  {
+    timestamps: true,  // Automatically adds createdAt and updatedAt fields
   }
-}, {
-  timestamps: true
-});
+);
 
-// Create index to ensure one budget per user per month
-budgetSchema.index({ userId: 1, month: 1 }, { unique: true });
+// Create compound index to ensure one budget per user per month/year
+// This prevents duplicate budgets for the same month
+budgetSchema.index({ userId: 1, month: 1, year: 1 }, { unique: true });
 
-// Create and export budget model
 module.exports = mongoose.model('Budget', budgetSchema);
