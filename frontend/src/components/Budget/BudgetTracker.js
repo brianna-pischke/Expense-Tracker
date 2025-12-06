@@ -3,32 +3,44 @@ import "./budgetTracker.css";
 import Card from "../UI/Card";
 
 const BudgetTracker = ({ onSaveBudget, currentBudget }) => {
-  const [enteredAmount, setEnteredAmount] = useState(currentBudget?.monthlyLimit?.toString() || '');  
+  const [enteredAmount, setEnteredAmount] = useState(currentBudget?.monthlyLimit?.toString() || '');
+  const [error, setError] = useState('');  
+  const [success, setSuccess] = useState('');  
   
   const amountChangeHandler = (event) => {
     setEnteredAmount(event.target.value);
+    setError('');  // Clear error when typing
+    setSuccess('');  // Clear success when typing
   };
 
-  const submitHandler = (event) => {
+  const submitHandler = async (event) => {  // Make it async
     event.preventDefault();
     const budgetAmount = parseFloat(enteredAmount);
     
     if (isNaN(budgetAmount) || budgetAmount < 0) {
-      alert('Please enter a valid positive number');
+      setError('Please enter a valid positive number');
       return;
     }
 
-    // Get current date
-    const now = new Date();
-    const month = now.getMonth() + 1;  // 1-12
-    const year = now.getFullYear();
-    
-    // Send budget in the format backend expects: { monthlyLimit, month, year }
-    onSaveBudget({
-      monthlyLimit: budgetAmount,  
-      month: month,                 
-      year: year                   
-    });
+    try {
+      // Get current date
+      const now = new Date();
+      const month = now.getMonth() + 1;  // 1-12
+      const year = now.getFullYear();
+      
+      // Send budget
+      await onSaveBudget({
+        monthlyLimit: budgetAmount,
+        month: month,
+        year: year
+      });
+      
+      setSuccess('Budget saved successfully!');  // Show success
+      setError('');
+    } catch (err) {
+      setError('Failed to save budget. Please try again.');
+      setSuccess('');
+    }
   };
 
   return (
@@ -45,6 +57,11 @@ const BudgetTracker = ({ onSaveBudget, currentBudget }) => {
             placeholder="Enter budget amount"
           />
         </div>
+        
+        {/* ADD ERROR/SUCCESS MESSAGES */}
+        {error && <p style={{ color: 'red', marginTop: '0.5rem' }}>{error}</p>}
+        {success && <p style={{ color: 'green', marginTop: '0.5rem' }}>{success}</p>}
+        
         <div className="budget-tracker__actions">
           <button type="submit">Save Budget</button>
         </div>
