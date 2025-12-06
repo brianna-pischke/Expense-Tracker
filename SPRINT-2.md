@@ -12,4 +12,4 @@ Week 15: 12/3/25 8:05-8:20 (All members) - Planned for reconciliation between wo
 
 **URL OF DEPLOYED APPLICATION:**
 
-https://expense-tracker-production-3a74.up.railway.app/
+https://outstanding-freedom-production.up.railway.app/
