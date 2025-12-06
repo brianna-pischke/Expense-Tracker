@@ -1,5 +1,5 @@
 **NEW FEATURE IMPLEMENTED: BUDGET TRACKER**
-
+Users can add bugets. A visual indicator conveys whether expenses have surpased the budget or not. Aggregated expenses are shown in comparison to the set budget.
 
 **MINUTES FROM WEEKLY STAND UP MEETINGS:**
 Weeks 13: 11/19/25 8:20-8:35 (All members) - Talked about adding new feature like a dashboard with a profile viewer or a budget module. Decided on a budget module.
