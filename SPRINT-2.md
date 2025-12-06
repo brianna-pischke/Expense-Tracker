@@ -1,4 +1,5 @@
 **NEW FEATURE IMPLEMENTED: BUDGET TRACKER**
+
 Users can add bugets. A visual indicator conveys whether expenses have surpased the budget or not. Aggregated expenses are shown in comparison to the set budget.
 
 **MINUTES FROM WEEKLY STAND UP MEETINGS:**
