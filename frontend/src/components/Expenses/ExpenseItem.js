@@ -4,7 +4,6 @@ import "./ExpenseItem.css";
 import ExpenseDate from "./ExpenseDate";
 import Card from "../UI/Card";
 
-// gonna learn about states now!
 
 function ExpenseItem(props) {
 
