@@ -39,6 +39,3 @@ function DisplayExpenses(props) {
 }
 
 export default DisplayExpenses;
-}
-
-export default DisplayExpenses;
