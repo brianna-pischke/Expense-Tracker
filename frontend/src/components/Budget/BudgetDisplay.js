@@ -3,13 +3,22 @@ import "./budgetTracker.css";
 import Card from "../UI/Card";
 
 const BudgetDisplay = ({ budget, totalSpent }) => {
-  if (!budget || budget.amount === 0) {
+  // Return null if no budget is set
+  if (!budget) {
     return null;
   }
 
-  const remaining = budget.amount - totalSpent;
+  // Use monthlyLimit instead of amount 
+  const budgetAmount = budget.monthlyLimit || 0;
+  
+  // Return null if budget is 0
+  if (budgetAmount === 0) {
+    return null;
+  }
+
+  const remaining = budgetAmount - totalSpent;
   const isOverBudget = remaining < 0;
-  const percentageUsed = budget.amount > 0 ? (totalSpent / budget.amount) * 100 : 0;
+  const percentageUsed = budgetAmount > 0 ? (totalSpent / budgetAmount) * 100 : 0;
 
   // Determine color based on budget status
   const getStatusColor = () => {
@@ -26,15 +35,18 @@ const BudgetDisplay = ({ budget, totalSpent }) => {
       <div className="budget-display__header">
         <h3>Budget Overview</h3>
       </div>
+      
       <div className="budget-display__content">
         <div className="budget-display__row">
           <span className="budget-display__label">Budget:</span>
-          <span className="budget-display__value">${budget.amount.toFixed(2)}</span>
+          <span className="budget-display__value">${budgetAmount.toFixed(2)}</span>
         </div>
+        
         <div className="budget-display__row">
           <span className="budget-display__label">Spent:</span>
           <span className="budget-display__value">${totalSpent.toFixed(2)}</span>
         </div>
+        
         <div className="budget-display__row budget-display__row--highlight">
           <span className="budget-display__label">
             {isOverBudget ? 'Overspent:' : 'Remaining:'}
@@ -46,6 +58,7 @@ const BudgetDisplay = ({ budget, totalSpent }) => {
             ${Math.abs(remaining).toFixed(2)}
           </span>
         </div>
+        
         <div className="budget-display__progress">
           <div className="budget-display__progress-bar">
             <div 
